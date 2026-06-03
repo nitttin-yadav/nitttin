@@ -21,7 +21,9 @@ export async function apiFetch<T>(
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (token) {
+    headers["X-Auth-Token"] = token;
+  }
 
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
 

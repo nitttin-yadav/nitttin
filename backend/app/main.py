@@ -1,7 +1,11 @@
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.auth.router import router as auth_router
 from app.config import settings
@@ -63,3 +67,16 @@ app.include_router(dash_router)
 @app.get("/api/health")
 def health_check():
     return {"status": "ok", "app": settings.APP_NAME, "version": settings.VERSION}
+
+
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
+if STATIC_DIR.is_dir():
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        file_path = STATIC_DIR / full_path
+        if file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(STATIC_DIR / "index.html")
+
+    app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
