@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,11 +14,29 @@ from app.memory.router import router as mem_router
 from app.study.router import router as study_router
 from app.tasks.router import router as tasks_router
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from app.database import Base, engine  # noqa: F811
+    import app.auth.models  # noqa: F401
+    import app.conversations.models  # noqa: F401
+    import app.devices.models  # noqa: F401
+    import app.finance.models  # noqa: F401
+    import app.fitness.models  # noqa: F401
+    import app.memory.models  # noqa: F401
+    import app.study.models  # noqa: F401
+    import app.tasks.models  # noqa: F401
+
+    Base.metadata.create_all(bind=engine)
+    yield
+
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
