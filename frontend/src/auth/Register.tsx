@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Cpu } from "lucide-react";
 import { useAuth } from "./AuthContext";
 
 export default function Register() {
-  const { register } = useAuth();
+  const { register, user } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
@@ -19,12 +20,15 @@ export default function Register() {
     setLoading(true);
     try {
       await register(email, username, password, fullName);
+      navigate("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
       setLoading(false);
     }
   };
+
+  if (user) return <Navigate to="/" replace />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-mesh p-4">
