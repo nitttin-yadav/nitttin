@@ -17,6 +17,7 @@ from app.tasks.router import router as tasks_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    import os
     from app.database import Base, engine  # noqa: F811
     import app.auth.models  # noqa: F401
     import app.conversations.models  # noqa: F401
@@ -27,6 +28,7 @@ async def lifespan(app: FastAPI):
     import app.study.models  # noqa: F401
     import app.tasks.models  # noqa: F401
 
+    os.makedirs("data", exist_ok=True)
     Base.metadata.create_all(bind=engine)
     yield
 

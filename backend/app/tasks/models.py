@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 
 from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -11,8 +11,8 @@ from app.database import Base
 class Task(Base):
     __tablename__ = "tasks"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending | in_progress | completed
@@ -28,8 +28,8 @@ class Task(Base):
 class Goal(Base):
     __tablename__ = "goals"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(Text, default="")
     target_date: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -44,8 +44,8 @@ class Goal(Base):
 class Habit(Base):
     __tablename__ = "habits"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     frequency: Mapped[str] = mapped_column(String(20), default="daily")  # daily | weekly | custom
     streak: Mapped[int] = mapped_column(Integer, default=0)
@@ -59,8 +59,8 @@ class Habit(Base):
 class HabitLog(Base):
     __tablename__ = "habit_logs"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    habit_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("habits.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    habit_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("habits.id"), nullable=False)
     completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     habit = relationship("Habit", back_populates="logs")
@@ -69,8 +69,8 @@ class HabitLog(Base):
 class CalendarEvent(Base):
     __tablename__ = "calendar_events"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(Text, default="")
     start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

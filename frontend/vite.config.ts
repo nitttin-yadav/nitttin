@@ -1,8 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["icons/icon-192.png", "icons/icon-512.png"],
+      manifest: false,
+    }),
+  ],
   server: {
     proxy: {
       "/api": "http://localhost:8000",
